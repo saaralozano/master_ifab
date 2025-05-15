@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:master_ifab/config/data/local_video_post.dart';
 import 'package:master_ifab/config/entities/video_post.dart';
+import 'package:master_ifab/presentation/widgets/full_screen_player.dart';
 import 'package:master_ifab/presentation/widgets/video_buttons.dart';
 
 class VideoScrollableView extends StatelessWidget {
@@ -25,7 +26,13 @@ class VideoScrollableView extends StatelessWidget {
 
         return Stack(
           children: [
-            // TODO: Video + gradiente
+            
+            SizedBox.expand(
+              child: FullScreenPlayer(
+                descriptio: videoPost.descriptio,
+                videoUrl: videoPost.videoUrl,
+              ),
+            ),
 
             Positioned(
               bottom: 40,
