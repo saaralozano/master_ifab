@@ -25,5 +25,9 @@ final appRouter = GoRouter(
       path: '/theme-mutante',
       builder: (context, state) => const ThemeMutanteScreen(),
     ),
+    GoRoute(
+      path: '/sensors',
+      builder: (context, state) => const SensoresScreen(),
+    ),
   ]
 );
