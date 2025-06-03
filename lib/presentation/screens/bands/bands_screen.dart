@@ -21,6 +21,7 @@ class BandsScreen extends ConsumerWidget {
       body: Column(
         children: [
           _videreData(bands),
+          SizedBox(height: 20,),
           Expanded(
             child: ListView.builder(
               itemCount: bands.length,
