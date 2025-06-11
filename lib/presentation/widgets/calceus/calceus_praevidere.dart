@@ -1,35 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:master_ifab/presentation/providers/calceus_provider.dart';
+import 'package:master_ifab/presentation/widgets/calceus/button_aurantius.dart';
 
 class CalceusPraevidere extends StatelessWidget {
-  const CalceusPraevidere({super.key});
+
+  final bool screenCompletaEst;
+
+  const CalceusPraevidere({
+    super.key,
+    this.screenCompletaEst = false
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-      child: Container(
-        width: double.infinity,
-        height: 440,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 255, 207, 83),
-          borderRadius: BorderRadius.circular(50)
+
+    return GestureDetector(
+      onTap:() {
+        context.push('/shoes-desc');
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: screenCompletaEst ? 5 : 30, 
+          vertical: screenCompletaEst ? 5 : 0
         ),
-        child: Column(
-          children: [
-            _CalceusCumUmbra(),
-            _CalceusMensurae()
-          ],
+        child: Container(
+          width: double.infinity,
+          height: screenCompletaEst ? 410 : 440,
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 255, 207, 83),
+            borderRadius: BorderRadius.circular(50)
+          ),
+          child: Column(
+            children: [
+              _CalceusCumUmbra(),
+              if (!screenCompletaEst) _CalceusMensurae()
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _CalceusCumUmbra extends StatelessWidget {
+class _CalceusCumUmbra extends ConsumerWidget {
+
   const _CalceusCumUmbra();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final calceusState = ref.watch(calceusProvider);
+
     return Padding(
       padding: const EdgeInsets.only(top: 30),
       child: Stack(
@@ -39,7 +62,7 @@ class _CalceusCumUmbra extends StatelessWidget {
             right: 0,
             child: const _UmbraProjecta(),
           ),
-          Image(image: AssetImage('assets/imagines/azul.png'), width: 320, height: 320, fit: BoxFit.cover)
+          Image(image: AssetImage(calceusState.assetImago), width: 320, height: 320, fit: BoxFit.cover)
         ],
       ),
     );
@@ -89,7 +112,7 @@ class _CalceusMensurae extends StatelessWidget {
   }
 }
 
-class _HaecMensura extends StatelessWidget {
+class _HaecMensura extends ConsumerWidget {
 
   final double numerus;
 
@@ -98,26 +121,44 @@ class _HaecMensura extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      width: 45,
-      height: 45,
-      decoration: BoxDecoration(
-        color: numerus == 9 ? Color.fromARGB(255, 241, 162, 58) : Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: numerus == 9 ? Color.fromARGB(255, 226, 106, 42) : Color.fromARGB(255, 241, 162, 58),
-            blurRadius: 10,
-            offset: Offset(0, 5)
-          )
-        ]
-      ),
-      child: Text(
-        '$numerus'.replaceAll(".0", ''), 
-        style: TextStyle(color: numerus == 9 ? Colors.white : Color.fromARGB(255, 241, 162, 58)),
+  Widget build(BuildContext context, WidgetRef ref) {
+
+    final calceusState = ref.watch(calceusProvider);
+
+    return GestureDetector(
+      onTap: () {
+        ref.read(calceusProvider.notifier).ponereMensura(numerus);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          color: numerus == calceusState.mensura 
+            ? Color.fromARGB(255, 241, 162, 58) 
+            : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: numerus == calceusState.mensura 
+                ? Color.fromARGB(255, 226, 106, 42) 
+                : Color.fromARGB(255, 241, 162, 58),
+              blurRadius: 10,
+              offset: Offset(0, 5)
+            )
+          ]
+        ),
+        child: Text(
+          '$numerus'.replaceAll(".0", ''), 
+          style: TextStyle(
+            color: numerus == calceusState.mensura 
+              ? Colors.white 
+              : Color.fromARGB(255, 241, 162, 58)
+            ),
+        ),
       ),
     );
   }
 }
+
+
